@@ -333,7 +333,7 @@
             else {
                 state = false
                 $recorder.stop();
-                saveSound($soundFile, document.cookie.split('=')[2] + '_' + $d.getDate() + '-' + $d.getMonth() + '-' + $d.getFullYear() + '_' + $d.getHours() + '-' + $d.getMinutes() + '-' + $d.getSeconds() + '.wav');
+                saveSound($soundFile, document.cookie.split('=')[2] + '' + $d.getDate() + '' + $d.getMonth() + '' + $d.getFullYear() + '' + $d.getHours() + '' + $d.getMinutes() + '' + $d.getSeconds() + '.wav');
                 buildMultiply()
                 Plotly.animate('graph',
                     {
@@ -389,8 +389,8 @@
                         $("#hnr").text("Отношение гармоника/шум: " + hnr + " dB");
                         $("#intensity").text("Интенсивность: " + intensity + " dB");
 
-                        FileMassive.push(new FileInfo(files[0].name, $('#jitter').text().split(' ')[2], $('#shimmer').text().split(' ')[2],
-                            $('#hnr').text().split(' ')[4], $('#intensity').text().split(' ')[3]))
+                        FileMassive.push(new FileInfo(files[0].name, jitter, shimmer,
+                            hnr, intensity))
 
                         var frequency = [];
                         var power = [];

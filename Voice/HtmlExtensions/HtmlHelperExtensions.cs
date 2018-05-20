@@ -20,7 +20,7 @@ namespace Voice.HtmlExtensions
                 paddingDiv.MergeAttribute("style", "padding-left: 500px");
             foreach(var file in files)
             {
-                info.Add($"Имя файла: <a class=\"playElement\" id=\"{file.Name}\">{file.Name}</a> <a href=\"#\"> " +
+                info.Add($"Имя файла: <a class=\"playElement\" id=\"{file.Name}\">{file.Name}</a> <a> " +
                     $"<span class=\"glyphicon glyphicon-remove\" id=\"deleteAudio\" name=\"{file.Name}_{visit.Id}\"" +
                     $"style=\"color: red\"></span> </a> <br> " +
                     $"Джиттер: {file.Jitter}% <br>" +

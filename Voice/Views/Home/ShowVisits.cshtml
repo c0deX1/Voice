@@ -31,21 +31,24 @@
         <div class="panel-group" id="accordion" style="z-index:1">
             <h2>@ViewBag.Title</h2>
             @{
-            List<Visit> visits;
-            Patient patient;
-            using (DatabaseContext db = new DatabaseContext())
-            {
-                patient = db.Patients.FirstOrDefault(p => p.Login == User.Identity.Name);
-                visits = db.Visits.Where(v => v.PatientId == patient.Id).ToList();
-            }
-            int i = 0;
-            foreach (Visit visit in visits)
-            {
-                List<WavFile> files;
+                List<Visit> visits = new List<Visit>();
+                Patient patient;
                 using (DatabaseContext db = new DatabaseContext())
                 {
-                    files = db.WavFiles.Where(f => f.VisitId == visit.Id).ToList();
+                    patient = db.Patients.FirstOrDefault(p => p.Login == User.Identity.Name);
+                    if (patient != null)
+                    {
+                        visits = db.Visits.Where(v => v.PatientId == patient.Id).ToList();
+                    }
                 }
+                int i = 0;
+                foreach (Visit visit in visits)
+                {
+                    List<WavFile> files;
+                    using (DatabaseContext db = new DatabaseContext())
+                    {
+                        files = db.WavFiles.Where(f => f.VisitId == visit.Id).ToList();
+                    }
 
                 @HtmlHelperExtensions.CollapseElemets(patient, visit, files, i);
             i++;
@@ -111,9 +114,9 @@
             })
     });
 
-    $('#deleteAudio').click(function () {
-        $.get('@Url.Action("DeleteAudio", "Home")', "file=" + this.getAttribute('name').split('_')[0] + "&visit=" + this.getAttribute('name').split('_')[1], function (result) {
-            //console.log(_base64ToArrayBuffer(result))
+    $('.glyphicon-remove').click(function () {
+         $.get('@Url.Action("DeleteAudio", "Home")', "file=" + this.getAttribute('name').split('_')[0] + "&visit=" + this.getAttribute('name').split('_')[1], function (result) {
+            
         })
             .done(function (result) {
                 window.location.reload(false);

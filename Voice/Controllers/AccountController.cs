@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.Mvc;
 using Voice.Models;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace Voice.Controllers
