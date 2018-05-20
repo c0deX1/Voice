@@ -1,4 +1,4 @@
-Jitter_loc = 0.284
-Shimmer_loc = 0.8009999999999999
-Mean harmonics-to-noise ratio = 26.155
-Mean intencity = 59.676238051336114
+Jitter_loc = 0.146
+Shimmer_loc = 1.555
+Mean harmonics-to-noise ratio = 30.274
+Mean intencity = 57.83803121157665
