@@ -1,0 +1,66 @@
+﻿@model Voice.Models.InformationModel
+
+@{
+    ViewBag.Title = "Информация о пользователе";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+<head>
+    <title>@ViewBag.Title</title>
+</head>
+<h2>@ViewBag.Text</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @Value = @ViewBag.Name } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Surname, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "form-control", @Value = @ViewBag.Surname } })
+            @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Age, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control", @Value = @ViewBag.Age } })
+            @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Sex, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.RadioButtonFor(m => m.Sex, "Мужской", new { @Id = "Man" })
+            @Html.Label("Man", "Мужской")
+            <br>
+            @Html.RadioButtonFor(m => m.Sex, "Женский", new { @Id = "Female" })
+            @Html.Label("Female", "Женский")
+            @Html.ValidationMessageFor(m => m.Sex)
+            <script>
+                if ('@ViewBag.Sex' == 'Мужской')
+                    $('#Man').attr("checked", true);
+                if('@ViewBag.Sex' == 'Женский')
+                    $('#Female').attr("checked", true);
+            </script>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value=@ViewBag.Button class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}

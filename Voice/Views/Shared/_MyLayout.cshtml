@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/p5")
+    @Scripts.Render("~/bundles/plotly")
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div id="menu">
+        <div class="header">
+            <p>VOICETRAIN</p>
+        </div>
+        <div id="menu_list">
+            <ul class="menu_active">
+                <li id="li_1">@Html.ActionLink("Главная", "Index", "Home")</li>
+            </ul>
+            <li class="menu_header">Информация</li>
+            <ul class="menu_active">
+                <li id="li_2">@Html.ActionLink("Изменить информацию о себе", "Information", "Home")</li>
+                </ul>
+                <ul class="menu_active">
+                    <li id="li_4">@Html.ActionLink("Просмотр посещений", "ShowVisits", "Home")</li>
+                    asdasd
+                </ul>
+                <li class="menu_header">ТРЕНИРОВКА</li>
+                <ul class="menu_active">
+                    <li id="li_2">@Html.ActionLink("Голосовое поле", "Longer", "Home")</li>
+                </ul>
+                <ul class="menu_active">
+                    <li id="li_3">@Html.ActionLink("Гармонический анализ", "HarmonicAnalysis", "Home")</li>
+                </ul>
+                <ul class="menu_active">
+                    <li id="li_3">@Html.ActionLink("Упражнение \"Треугольник\"", "Triangle", "Home")</li>
+                </ul>
+</div>
+    </div>
+    <div id="content">
+        @RenderBody()
+    </div>
+</body>
+</html>

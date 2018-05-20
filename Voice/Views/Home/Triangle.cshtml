@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "Упражнение \"Треугольник\"";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+<head>
+    <title>
+        @ViewBag.Title
+    </title>
+</head>
+
+<div style="font-size: 22px; width: 100%;">
+    <div style="margin: 0 auto; width: 1024px;">
+        <div style="background: #eee; padding: 10px; width: 1024px;">
+            <canvas id="canvas" style="backgr2ound: #fff;"></canvas>
+        </div>
+        <div style="padding: 0 10px;">
+            <div class="fl btn btn-primary" id="startBtn">Start</div>
+            <div class="cl"></div>
+            <div style="line-height: 35px;">
+                <div id="output"></div>
+                <div id="result"></div>
+            </div>
+        </div>
+    </div>
+</div>
+@Scripts.Render("~/bundles/triangle")

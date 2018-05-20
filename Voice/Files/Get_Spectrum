@@ -1,0 +1,13 @@
+form Args
+	sentence First_text
+endform
+
+file$ = first_text$ + ".wav"
+name$ = first_text$
+deleteFile: "Spectrum.txt"
+Read from file... 'file$'
+select Sound 'name$'
+spect$ = To Spectrum... "yes"
+select Spectrum 'name$'
+listt$ = List... no yes no no no yes
+appendFile: "Spectrum.txt", listt$
