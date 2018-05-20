@@ -426,10 +426,13 @@
     $("#LoadVisit").click(() => {
         var query = "?";
         for (var i = 0; i < FileMassive.length; i++) {
-            query += "&FileName=" + FileMassive[i].FileName + "&" + "Shimmer=" + FileMassive[i].Shimmer + "&" + "Jitter=" + FileMassive[i].Jitter +
+            query += "FileName=" + FileMassive[i].FileName + "&" + "Shimmer=" + FileMassive[i].Shimmer + "&" + "Jitter=" + FileMassive[i].Jitter +
                 "&" + "HNR=" + FileMassive[i].HNR + "&" + "Intensity=" + FileMassive[i].Intensity;
+    if(i!=FileMassive.length)
+    query+='&'
         }
-        query += "&" + newVisit + "_" + contVisit;
+        query += newVisit + "_" + contVisit;
+    console.log(query);
         $.get('@Url.Action("AddVisit", "Home")', query, function (result) {
             //console.log(_base64ToArrayBuffer(result))
         })

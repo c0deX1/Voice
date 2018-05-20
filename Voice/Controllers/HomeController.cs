@@ -88,28 +88,28 @@ namespace Voice.Controllers
         {
             List<WavFile> files = new List<WavFile>();
             var RequestQuery = Request.QueryString;
-            for (int i = 0; i < RequestQuery[1].Split(',').Length; i++)
+            for (int i = 0; i < RequestQuery[0].Split(',').Length; i++)
                 files.Add(new WavFile
                 {
-                    Name = RequestQuery[1].Split(',')[i],
-                    Jitter = double.Parse(RequestQuery[3].Split(',')[i].Replace('.', ',')),
-                    Shimmer = double.Parse(RequestQuery[2].Split(',')[i].Replace('.', ',')),
-                    HNR = double.Parse(RequestQuery[4].Split(',')[i].Replace('.', ',')),
-                    Intensity = double.Parse(RequestQuery[5].Split(',')[i].Replace('.', ','))
+                    Name = RequestQuery[0].Split(',')[i],
+                    Jitter = double.Parse(RequestQuery[2].Split(',')[i].Replace('.', ',')),
+                    Shimmer = double.Parse(RequestQuery[1].Split(',')[i].Replace('.', ',')),
+                    HNR = double.Parse(RequestQuery[3].Split(',')[i].Replace('.', ',')),
+                    Intensity = double.Parse(RequestQuery[4].Split(',')[i].Replace('.', ','))
                 });
 
             Visit visit = new Visit();
             using (DatabaseContext db = new DatabaseContext())
             {
                 var patient = db.Patients.FirstOrDefault(p => p.Login == User.Identity.Name);
-                if (RequestQuery[0].Split(',')[1].Split('_')[0] != "undefined")
-                    if (bool.Parse(RequestQuery[0].Split(',')[1].Split('_')[0]))
+                if (RequestQuery[5].Split('_')[0] != "undefined")
+                    if (bool.Parse(RequestQuery[5].Split('_')[0]))
                     {
                         db.Visits.Add(new Visit { Patient = patient, DateTime = DateTime.Now });
                         db.WavFiles.AddRange(files);
                     }
-                if (RequestQuery[0].Split(',')[1].Split('_')[1] != "undefined")
-                    if (bool.Parse(RequestQuery[0].Split(',')[1].Split('_')[1]))
+                if (RequestQuery[5].Split('_')[1] != "undefined")
+                    if (bool.Parse(RequestQuery[5].Split('_')[1]))
                     {
                         visit = db.Visits
                             .OrderByDescending(v => v.DateTime)
