@@ -131,7 +131,12 @@ namespace Voice.Controllers
                 if (RequestQuery[5].Split('_')[0] != "undefined")
                     if (bool.Parse(RequestQuery[5].Split('_')[0]))
                     {
-                        db.Visits.Add(new Visit { Patient = patient, DateTime = DateTime.Now });
+                        visit = db.Visits.Add(new Visit { Patient = patient, DateTime = DateTime.Now });
+                        foreach (var file in files)
+                        {
+                            file.VisitId = visit.Id;
+                            visit.Files.Add(file);
+                        }
                         db.WavFiles.AddRange(files);
                     }
                 if (RequestQuery[5].Split('_')[1] != "undefined")
