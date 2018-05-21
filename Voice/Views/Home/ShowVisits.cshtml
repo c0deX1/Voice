@@ -38,7 +38,7 @@
                     patient = db.Patients.FirstOrDefault(p => p.Login == User.Identity.Name);
                     if (patient != null)
                     {
-                        visits = db.Visits.Where(v => v.PatientId == patient.Id).ToList();
+                        visits = db.Visits.Where(v => v.PatientId == patient.Id).OrderByDescending(v=>v.DateTime).ToList();
                     }
                 }
                 int i = 0;

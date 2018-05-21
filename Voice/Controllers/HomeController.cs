@@ -9,7 +9,7 @@ using Voice.Models;
 using System.Web.Security;
 using System.IO;
 using System.Data.Entity;
-
+using Newtonsoft.Json;
 
 namespace Voice.Controllers
 {
@@ -82,6 +82,32 @@ namespace Voice.Controllers
             return View();
         }
 
+        [Authorize]
+        [HttpGet]
+        public ActionResult ShowProgress()
+        {
+            return View();
+        }
+        [Authorize]
+        [HttpGet]
+        public JsonResult GetVisits()
+        {
+            List<Visit> visits;
+            List<List<WavFile>> files = new List<List<WavFile>>();
+            using (DatabaseContext db = new DatabaseContext())
+            {
+                visits = db.Visits.Where(v=>v.Patient.Login == User.Identity.Name).Include(v=>v.Files).ToList();
+
+                foreach (var visit in visits)
+                    files.Add(visit.Files.ToList());
+            }
+            var json = JsonConvert.SerializeObject(files, Formatting.Indented,
+                            new JsonSerializerSettings
+                            {
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                            });
+                return Json(json, JsonRequestBehavior.AllowGet);
+        }
         [Authorize]
         [HttpGet]
         public void AddVisit()

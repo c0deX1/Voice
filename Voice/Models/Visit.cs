@@ -20,7 +20,6 @@ namespace Voice.Models
         public double FirstPitch { get; set; }
         public double PitchMassive { get; set; }
 
-        [ForeignKey("Visit")]
         public int VisitId { get; set; }
         public Visit Visit { get; set; }
     }
@@ -30,7 +29,7 @@ namespace Voice.Models
         public int Id { get; set; }
         
         public DateTime DateTime { get; set; }
-        public ICollection<WavFile> Files;
+        public virtual ICollection<WavFile> Files { get; set; }
         public int PatientId { get; set; }
         public Patient Patient { get; set; }
         public Visit()
@@ -53,7 +52,7 @@ namespace Voice.Models
         [Required]
         public string Sex { get; set; }
 
-        public ICollection<Visit> Visits { get; set; }
+        public virtual ICollection<Visit> Visits { get; set; }
         public Patient()
         {
             Visits = new List<Visit>();

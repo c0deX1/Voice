@@ -1,0 +1,90 @@
+﻿
+@{
+    ViewBag.Title = "ShowProgress";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+<h2>ShowProgress</h2>
+<body>
+    <div class="col-lg-6" style="height: 300px" id="jitterGraph"></div>
+    <div class="col-lg-6" style="height: 300px" id="shimmerGraph"></div>
+    <div class="col-lg-6" style="height: 300px" id="hnrGraph"></div>
+    <div class="col-lg-6" style="height: 300px" id="intensityGraph"></div>
+</body>
+<script>
+    var visits = [];
+
+    var jitterGraph = document.getElementById('jitterGraph')
+    var shimmerGraph = document.getElementById('shimmerGraph')
+    var hnrGraph = document.getElementById('hnrGraph')
+    var intensityGraph = document.getElementById('intensityGraph')
+
+    var jitterMassive = []
+    var shimmerMassive = []
+    var hnrMassive = []
+    var intensityMassive = []
+
+    var length;
+
+    function graph(nameGraph, name , titleY, yArr, length, color) {
+        var trace= {
+            x: Array.from({ length: length }, (v, k) => k + 1),
+            y: yArr,
+            name: name,
+            mode: 'scatter',
+            line: {
+                color: color
+            }
+        }
+        Plotly.plot(nameGraph, [
+            trace
+        ], {
+                xaxis: {
+                    range: [0, length + 1],
+                    title: 'Посещение',
+                    titlefont: {
+                        family: 'Courier New, monospace',
+                        size: 18,
+                        color: '#7f7f7f'
+                    }
+                },
+                yaxis: {
+                    //range: [0,2],
+                    title: titleY,
+                    titlefont: {
+                        family: 'Courier New, monospace',
+                        size: 18,
+                        color: '#7f7f7f'
+                    }
+                }
+            })
+    }
+
+    $.ajax({
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        url: "@Url.Action("GetVisits", "Home")",
+        success: function (data) {
+            visits = JSON.parse(data);
+            for (var i = 0; i < visits.length; i++) {
+                jitterMassive.push(visits[i][0].Jitter)
+                shimmerMassive.push(visits[i][0].Shimmer)
+                hnrMassive.push(visits[i][0].HNR)
+                intensityMassive.push(visits[i][0].Intensity)
+                
+            }
+            length = jitterMassive.length;
+            build()
+        }
+    });
+
+    function build() {
+        graph('jitterGraph', "Jitter", "Jitter, %", jitterMassive, length, 'orange')
+        graph('shimmerGraph', "Shimmer", "Shimmer, %", shimmerMassive, length, 'black')
+        graph('hnrGraph', "HNR", "HNR, dB", hnrMassive, length, 'purple')
+        graph('intensityGraph', "Intensity", "HNR, dB", intensityMassive, length, 'aqua')
+    }
+  //  Plotly.newPlot('jitterGraph', data, layout);
+
+</script>
