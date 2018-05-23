@@ -86,6 +86,7 @@ namespace Voice.Controllers
         [HttpGet]
         public ActionResult ShowProgress()
         {
+            ViewBag.Title = "Изменение показателей";
             return View();
         }
         [Authorize]

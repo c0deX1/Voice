@@ -28,6 +28,10 @@ namespace Voice
                 "~/Scripts/longer.js",
                 "~/Scripts/piano.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/vision").Include(
+                "~/Scripts/specialview.js"
+                ));
+
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
@@ -35,6 +39,7 @@ namespace Voice
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
+                      "~/Content/site.min.css",
                       "~/Content/common.css",
                       "~/Content/index.css"));
             bundles.Add(new ScriptBundle("~/bundles/plotly").Include(

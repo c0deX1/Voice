@@ -1,10 +1,12 @@
 ﻿
 @{
-    ViewBag.Title = "ShowProgress";
     Layout = "~/Views/Shared/_MyLayout.cshtml";
 }
 
-<h2>ShowProgress</h2>
+<h2>@ViewBag.Title</h2>
+<head>
+    <title>@ViewBag.Title</title>
+</head>
 <body>
     <div class="col-lg-6" style="height: 300px" id="jitterGraph"></div>
     <div class="col-lg-6" style="height: 300px" id="shimmerGraph"></div>
@@ -83,7 +85,7 @@
         graph('jitterGraph', "Jitter", "Jitter, %", jitterMassive, length, 'orange')
         graph('shimmerGraph', "Shimmer", "Shimmer, %", shimmerMassive, length, 'black')
         graph('hnrGraph', "HNR", "HNR, dB", hnrMassive, length, 'purple')
-        graph('intensityGraph', "Intensity", "HNR, dB", intensityMassive, length, 'aqua')
+        graph('intensityGraph', "Intensity", "Intensity, dB", intensityMassive, length, 'aqua')
     }
   //  Plotly.newPlot('jitterGraph', data, layout);
 
