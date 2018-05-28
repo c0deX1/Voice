@@ -26,7 +26,8 @@ namespace Voice.HtmlExtensions
                     $"Джиттер: {file.Jitter}% <br>" +
                     $"Шиммер: {file.Shimmer}% <br>" +
                     $"Отношение гармоника/шум: {file.HNR} дБ <br>" +
-                    $"Интенсивность: {Math.Round(file.Intensity, 3)} дБ <br>");
+                    $"Интенсивность: {Math.Round(file.Intensity, 3)} дБ <br> " +
+                    $"Частота основного тона: {Math.Round(file.FirstPitch,3)}");
             }
             var panelDiv = new TagBuilder("div");
             panelDiv.AddCssClass("panel panel-default col-lg-8");

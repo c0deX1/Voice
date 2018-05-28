@@ -76,6 +76,7 @@
                 <div class="panel-body" id="jitter"></div>
                 <div class="panel-body" id="hnr"></div>
                 <div class="panel-body" id="intensity"></div>
+                <div class="panel-body" id="pitch"></div>
             </div>
         </div>
     </div>
@@ -91,15 +92,33 @@
 <script>
 
     class FileInfo{
-        constructor(FileName, Jitter, Shimmer, HNR, Intensity) {
+        constructor(FileName, Jitter, Shimmer, HNR, Intensity, Pitch) {
             this.FileName = FileName;
             this.Jitter = Jitter;
             this.Shimmer = Shimmer;
             this.HNR = HNR;
             this.Intensity = Intensity;
+            this.Pitch = Pitch;
         }
     }
     var FileMassive = [];
+
+    var array = [];
+    var flag = 0;
+    function closest(array, num) {
+        var i = 0;
+        var minDiff = 1000;
+        var ans;
+        for (i in array) {
+            var m = Math.abs(num - array[i]);
+            if (m < minDiff) {
+                minDiff = m;
+                ans = array[i];
+                flag = i;
+            }
+        }
+        return ans;
+    }
 
     if ('@ViewBag.RecordExist' == 'True')
         var contVisit = confirm("Продолжить посещение?");
@@ -159,20 +178,17 @@
         var multiarrayValueHz = [];
         var ff;
         var ffHz;
-        function dataToTable() {
+        function dataToTable(freq, amp) {
             var html = "";
             if (document.getElementsByClassName('table table table-striped')[0] != undefined) {
-                alert("deleed")
                 document.getElementById('table').removeChild(document.getElementsByClassName('table table table-striped')[0])
             }
             html = "<table class = \"table table-striped\"><tr> <th>f, Гц</th> <th>A, Дб</th> </tr> ";
-            ffMassive.forEach((item, i) => {
-                html += "<tr> <td>" + item + "</td> " + "<td>" + ffMassiveVal[i] + "</td> </tr> ";
+            freq.forEach((item, i) => {
+                html += "<tr> <td>" + item + "</td> " + "<td>" + amp[i] + "</td> </tr> ";
                 console.log("item = " + item + " i = " + i)
             })
             html += "</table>"
-            ffMassive = [];
-            ffMassiveVal = [];
             $("#table").append(html);
         }
         function findFfMassive() {
@@ -185,11 +201,11 @@
                 i++;
                 }
             }
-        $("#massive").click(() => {
-            findFfMassive();
+    $("#massive").click(() => {
+            buildMultiply(spectrum)
             Plotly.animate('graph',
                 {
-                    data: [{ x: spectrumHz, y: spectrum }, { x: ffMassive, y: ffMassiveVal }]
+                    data: [{ x: spectrumHz, y: spectrum }, { x: multiarrayVaribleBins, y: multiarrayValueBins }]
                 }, {
                     transition: {
                         duration: 0,
@@ -199,7 +215,7 @@
                         redraw: false,
                     }
                 });
-            dataToTable();
+        dataToTable(multiarrayVaribleBins, multiarrayValueBins);
         })
         function findFf() {
             var i = 1;
@@ -258,8 +274,18 @@
             var y = data.points[0].y.toPrecision(4);
 
            // ffHz = toHz(toBins(x) - 1) + (x - toHz(toBins(x) - 1))/2 //avarage of 2 HZ values
-            ff = toBins(x);
-            buildMultiply();
+            //ff = toBins(x);
+            var counter = 0;
+            for (var i = 0; i < spectrumHz.length; i++) {
+                if (spectrumHz[i] == x) {
+                    break;
+                }
+                else {
+                    counter++;
+                }
+            }
+            ff = counter
+            buildMultiply(spectrum);
             Plotly.animate('graph',
                 {
                     data: [{ x: spectrumHz, y: spectrum }, { x: multiarrayVaribleBins, y: multiarrayValueBins }]
@@ -283,24 +309,19 @@
             })
 
         }
-        function buildMultiply() {
+        function buildMultiply(spectrum) {
             multiarrayVaribleBins = [];
             multiarrayValueBins = [];
-            var counter = 0;
             for (var i = ff; i < spectrum.length; i += ff) {
                 {
-                    /*multiarrayVaribleBins.push(i / 2);
-                    multiarrayValueBins.push(spectrum[i - toHz(5)]);*/ //попытка сделать спектр левого соседа
+                    console.log(i + " " + spectrum[i])
                     multiarrayVaribleBins.push(i);
                     multiarrayValueBins.push(spectrum[i]);
-                    counter = counter + 1;
                 }
             }
-
             multiarrayVaribleBins.forEach((item, i) => {
-                multiarrayVaribleBins[i] = toHz(item);
+                multiarrayVaribleBins[i] = spectrumHz[item];
             })
-
         }
         function update() {
             if (state === true) {
@@ -377,32 +398,42 @@
                     processData: false,
                     data: data,
                     success: function (result) {
+
                         var res = result.toString();
-                        console.log(res)
+
+                        var frequency = [];
+                        var power = [];
+                        for (var i = 6; i < res.split(',').length; i++) {
+                            frequency.push((parseFloat(res.split(',')[i].split('\t')[0])));
+                            power.push(parseFloat(res.split(',')[i].split('\t')[1]));
+                        }
+
+                        spectrumHz = frequency;
+                        spectrum = power;
+
+                        var min_power = Math.min.apply(Math, power);
+
                         var jitter = parseFloat(res.split(',')[0].split(' ')[2]).toFixed(3);
                         var shimmer = parseFloat(res.split(',')[1].split(' ')[2]).toFixed(3);
                         var hnr = parseFloat(res.split(',')[2].split(' ')[4]).toFixed(2);
                         var intensity = parseFloat(res.split(',')[3].split(' ')[3]).toFixed(2);
+                        var pitch = closest(spectrumHz, parseFloat(res.split(',')[4].split(' ')[3]).toFixed(2));
 
                         $("#jitter").text("Джиттер, локальный: " + jitter + " %");
                         $("#shimmer").text("Шиммер, локальный: " + shimmer + " %");
                         $("#hnr").text("Отношение гармоника/шум: " + hnr + " dB");
                         $("#intensity").text("Интенсивность: " + intensity + " dB");
+                        $('#pitch').text("Частота основного тона: " + pitch + " Hz");
 
                         FileMassive.push(new FileInfo(files[0].name, jitter, shimmer,
-                            hnr, intensity))
+                            hnr, intensity, pitch))
 
-                        var frequency = [];
-                        var power = [];
+                        ff = parseInt(flag)
 
-                        for (var i = 5; i < res.split(',').length; i++){
-                            frequency.push((parseFloat(res.split(',')[i].split('\t')[0])));
-                            power.push(Math.abs(parseFloat(res.split(',')[i].split('\t')[1])));
-                        }
-
-                        /*Plotly.animate('graph',
+                        buildMultiply(spectrum);
+                        Plotly.animate('graph',
                             {
-                                data: [{ x: frequency, y: power }]
+                                data: [{ x: spectrumHz, y: spectrum }, { x: multiarrayVaribleBins, y: multiarrayValueBins }]
                             }, {
                                 transition: {
                                     duration: 0,
@@ -411,7 +442,7 @@
                                     duration: 0,
                                     redraw: false,
                                 }
-                            });*/
+                            });
                     },
                     error: function (xhr, status, p3) {
                         alert(xhr.responseText);
@@ -427,7 +458,7 @@
         var query = "?";
         for (var i = 0; i < FileMassive.length; i++) {
             query += "FileName=" + FileMassive[i].FileName + "&" + "Shimmer=" + FileMassive[i].Shimmer + "&" + "Jitter=" + FileMassive[i].Jitter +
-                "&" + "HNR=" + FileMassive[i].HNR + "&" + "Intensity=" + FileMassive[i].Intensity;
+                "&" + "HNR=" + FileMassive[i].HNR + "&" + "Intensity=" + FileMassive[i].Intensity + "&Pitch=" + FileMassive[i].Pitch;
     if(i!=FileMassive.length)
     query+='&'
         }

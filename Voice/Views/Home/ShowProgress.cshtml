@@ -25,10 +25,11 @@
     var shimmerMassive = []
     var hnrMassive = []
     var intensityMassive = []
+    var pitchMassive = []
 
     var length;
 
-    function graph(nameGraph, name , titleY, yArr, length, color) {
+    function graph(nameGraph, name , titleY, yArr, length, color, goodVal, s1col, s2col) {
         var trace= {
             x: Array.from({ length: length }, (v, k) => k + 1),
             y: yArr,
@@ -38,9 +39,39 @@
                 color: color
             }
         }
-        Plotly.plot(nameGraph, [
-            trace
-        ], {
+        x1shape = trace.x.length + 1;
+        Plotly.plot(nameGraph, [trace],
+            {
+                shapes: [
+                    {
+                        type: 'rect',
+                        xref: 'x',
+                        yref: 'paper',
+                        x0: 0,
+                        y0: 0,
+                        x1: x1shape,
+                        y1: goodVal / Math.max.apply(Math, trace.y) - 0.1,
+                        fillcolor: s1col,
+                        opacity: 0.2,
+                        line: {
+                            width: 0
+                        }
+                    },
+                    {
+                        type: 'rect',
+                        xref: 'x',
+                        yref: 'paper',
+                        x0: 0,
+                        y0: goodVal / Math.max.apply(Math, trace.y) - 0.1,
+                        x1: x1shape,
+                        y1: 1,
+                        fillcolor: s2col,
+                        opacity: 0.2,
+                        line: {
+                            width: 0
+                        }
+                    }
+                ],
                 xaxis: {
                     range: [0, length + 1],
                     title: 'Посещение',
@@ -74,7 +105,6 @@
                 shimmerMassive.push(visits[i][0].Shimmer)
                 hnrMassive.push(visits[i][0].HNR)
                 intensityMassive.push(visits[i][0].Intensity)
-                
             }
             length = jitterMassive.length;
             build()
@@ -82,10 +112,10 @@
     });
 
     function build() {
-        graph('jitterGraph', "Jitter", "Jitter, %", jitterMassive, length, 'orange')
-        graph('shimmerGraph', "Shimmer", "Shimmer, %", shimmerMassive, length, 'black')
-        graph('hnrGraph', "HNR", "HNR, dB", hnrMassive, length, 'purple')
-        graph('intensityGraph', "Intensity", "Intensity, dB", intensityMassive, length, 'aqua')
+        graph('jitterGraph', "Jitter", "Jitter, %", jitterMassive, length, 'black', 0.5, 'green', 'red' )
+        graph('shimmerGraph', "Shimmer", "Shimmer, %", shimmerMassive, length, 'black', 1.5, 'green', 'red' )
+        graph('hnrGraph', "HNR", "HNR, dB", hnrMassive, length, 'black', 20 ,'red', 'green')
+        graph('intensityGraph', "Intensity", "Intensity, dB", intensityMassive, length, 'black', 0, 'white', 'white');
     }
   //  Plotly.newPlot('jitterGraph', data, layout);
 

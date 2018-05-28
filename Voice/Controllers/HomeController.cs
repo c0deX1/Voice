@@ -20,6 +20,16 @@ namespace Voice.Controllers
             return File.ReadAllBytes(path);
         }
     }
+
+    public class FilePrototype
+    {
+        string FileName;
+        string Jitter;
+        string Shimmer;
+        string HNR;
+        string Intensity;
+        string Pitch;
+    }
     public class HomeController : Controller
     {
         public ActionResult ShowVisits()
@@ -122,15 +132,16 @@ namespace Voice.Controllers
                     Jitter = double.Parse(RequestQuery[2].Split(',')[i].Replace('.', ',')),
                     Shimmer = double.Parse(RequestQuery[1].Split(',')[i].Replace('.', ',')),
                     HNR = double.Parse(RequestQuery[3].Split(',')[i].Replace('.', ',')),
-                    Intensity = double.Parse(RequestQuery[4].Split(',')[i].Replace('.', ','))
+                    Intensity = double.Parse(RequestQuery[4].Split(',')[i].Replace('.', ',')),
+                    FirstPitch = double.Parse(RequestQuery[5].Split(',')[i].Replace('.', ','))
                 });
 
             Visit visit = new Visit();
             using (DatabaseContext db = new DatabaseContext())
             {
                 var patient = db.Patients.FirstOrDefault(p => p.Login == User.Identity.Name);
-                if (RequestQuery[5].Split('_')[0] != "undefined")
-                    if (bool.Parse(RequestQuery[5].Split('_')[0]))
+                if (RequestQuery[6].Split('_')[0] != "undefined")
+                    if (bool.Parse(RequestQuery[6].Split('_')[0]))
                     {
                         visit = db.Visits.Add(new Visit { Patient = patient, DateTime = DateTime.Now });
                         foreach (var file in files)
@@ -140,8 +151,8 @@ namespace Voice.Controllers
                         }
                         db.WavFiles.AddRange(files);
                     }
-                if (RequestQuery[5].Split('_')[1] != "undefined")
-                    if (bool.Parse(RequestQuery[5].Split('_')[1]))
+                if (RequestQuery[6].Split('_')[1] != "undefined")
+                    if (bool.Parse(RequestQuery[6].Split('_')[1]))
                     {
                         visit = db.Visits
                             .OrderByDescending(v => v.DateTime)
@@ -279,7 +290,7 @@ namespace Voice.Controllers
                     resultSpec = System.IO.File.ReadAllLines(Server.MapPath("~/Files/Spectrum.txt"));
                 }
             }
-            return Json(resultJit/*.Concat(resultSpec)*/);
+            return Json(resultJit.Concat(resultSpec));
         }
 
         [HttpGet]

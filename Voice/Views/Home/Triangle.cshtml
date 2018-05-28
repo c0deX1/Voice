@@ -9,10 +9,24 @@
         @ViewBag.Title
     </title>
 </head>
-
+<div style="right:0; position: absolute; z-index:999">
+    <a href="#">
+        <span class="glyphicon glyphicon-question-sign" style="font-size: xx-large" data-toggle="collapse" href="#info"></span>
+    </a>
+    <div class="collapse" id="info">
+        <div class="alert alert-success" role="alert" style=" width:400px;">
+            <h4 class="alert-heading">Упражнение "Треугольник"</h4>
+            Начните произносить какой-либо гласный звук и нажмите "Начать".
+            Программа зафиксирует текущую частоту Вашего голоса и начнется запись.<br>
+            По мере продвижения круга по треугольнику частота будет изменяться, старайтесь
+            изменить частоту вашего голоса так, чтобы круг оставался в пределах ребра треугольника.<br>
+            Подсказка в центре треугольника подскажет, как следует изменить частоту голоса.
+        </div>
+    </div>
+</div>
 <div style="font-size: 22px; width: 100%;">
     <div style="margin: 0 auto; width: 1024px;">
-        <div style="background: #eee; padding: 10px; width: 1024px;">
+        <div style="background: #eee; padding: 10px; width: 550px;">
             <canvas id="canvas" style="backgr2ound: #fff;"></canvas>
         </div>
         <div style="padding: 0 10px;">
