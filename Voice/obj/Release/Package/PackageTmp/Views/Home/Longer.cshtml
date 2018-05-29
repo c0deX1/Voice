@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewBag.Title = "Голосовое поле";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+<head>
+    <title>
+        @ViewBag.Title
+    </title>
+</head>
+<div style="right:0; position: absolute; z-index:999">
+    <a href="#">
+        <span class="glyphicon glyphicon-question-sign" style="font-size: xx-large" data-toggle="collapse" href="#info"></span>
+    </a>
+    <div class="collapse" id="info">
+        <div class="alert alert-success" role="alert" style=" width:800px;">
+            <h4 class="alert-heading">Голосовое поле</h4>
+            Для начала, укажите предпологаемые максимальные и минимальные значения частот
+            и громкости, нажмите "Установить значения".<br>
+            Нажмите кнопку "Начать" и начнется запись с микрофона.<br>
+            Начните произносить гласный звук, например "А". Произносите его от
+            максимально тихого и низкого до максимально громкого и высокого.
+            В таблице "Параметры голоса" вы можете увидеть мгновенные значения частоты
+            и громкости.<br>
+            Посмотрите на график и попытайтесь заполнить пропуски между точками, произнося
+            соответствующие частоты с максимальной и минимальной громкостями. <br>
+            Для того, чтобы услышать сигнал необходимой частоты, нажмите на клавишу пианино 
+            под соответствующей частотой.
+        </div>
+    </div>
+</div>
+<div style="font-size: 22px; width: 100%;">
+    <div style="margin: 0 auto; width: 1024px;">
+        <div style="background: #eee; padding: 10px; width: 1024px;">
+            <canvas class="holst" id="canvas" style="backgr2ound: #fff;"></canvas>
+            <div class="col-lg-4" style="float: right">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Параметры голосового поля:</div>
+                    <div class="panel-body">
+                        <label for="maxHz" style="font-size: 20px"> Макс. частота = </label><input id="maxHz" type="number" class="form-control" value="3000" style="width: 70px;display: inline-block">
+                        <label for="minHz" style="font-size: 20px"> Мин. частота = </label><input id="minHz" type="number" class="form-control" value="100" style="width: 70px;display: inline-block">
+                        <label for="maxdB" style="font-size: 20px"> Макс. громкость = </label><input id="maxdB" type="number" class="form-control" value="50" style="width: 70px;display: inline-block">
+                        <label for="mindB" style="font-size: 20px"> Мин. громкость = </label><input id="mindB" type="number" class="form-control" value="10" style="width: 70px;display: inline-block">
+                       <button class="btn btn-secondary" id="valueSet">Установить значения</button>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Параметры голоса:</div>
+                    <div class="panel-body" id="output"></div>
+                </div>
+            </div>
+            <div class="q" style="position:relative;"></div>
+        </div>
+        <div style="padding: 150px 0px;">
+            <div class="col-lg-8">
+                <div class="fl btn btn-primary" id="startBtn">Начать</div>
+                <br /><br />
+            </div>
+       
+            <br /><br />  <br /><br />
+        </div>
+    </div>
+</div>
+@Scripts.Render("~/bundles/longer")

@@ -312,3 +312,4 @@ D:\University\Study\MA_DIPLOMA\Others work\Array_work\Voice\Voice\obj\Debug\Voic
 D:\University\Study\MA_DIPLOMA\Others work\Array_work\Voice\Voice\obj\Debug\Voice.csproj.CoreCompileInputs.cache
 D:\University\Study\MA_DIPLOMA\Others work\Array_work\Voice\Voice\obj\Debug\Voice.dll
 D:\University\Study\MA_DIPLOMA\Others work\Array_work\Voice\Voice\obj\Debug\Voice.pdb
+C:\Users\sizv1\source\Voice\Voice\obj\Debug\Voice.Migrations.Initial.resources

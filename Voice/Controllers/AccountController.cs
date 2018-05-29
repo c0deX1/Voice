@@ -40,7 +40,7 @@ namespace Voice.Controllers
                 // поиск пользователя в бд
                 User user = null;
                 string PasswordHash = Cypher(model.Password);
-                using (UserContext db = new UserContext())
+                using (DatabaseContext db = new DatabaseContext())
                 {
                     user = db.Users.FirstOrDefault(u => u.Login == model.Login && u.Password == PasswordHash);
                 }
@@ -73,14 +73,14 @@ namespace Voice.Controllers
             {
                 string PasswordHash = Cypher(model.Password);
                 User user = null;
-                using (UserContext db = new UserContext())
+                using (DatabaseContext db = new DatabaseContext())
                 {
                     user = db.Users.FirstOrDefault(u => u.Login == model.Login);
                 }
                 if (user == null)
                 {
                     // создаем нового пользователя
-                    using (UserContext db = new UserContext())
+                    using (DatabaseContext db = new DatabaseContext())
                     {
                         db.Users.Add(new User { Login = model.Login, Password = PasswordHash, Role = model.Role});
                         db.SaveChanges();

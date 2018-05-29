@@ -226,7 +226,7 @@ namespace Voice.Controllers
                 // поиск пользователя в бд
                 Patient patient = null;
                 User user = null;
-                using (UserContext uc = new UserContext())
+                using (DatabaseContext uc = new DatabaseContext())
                 {
                     user = uc.Users.FirstOrDefault(u => u.Login == User.Identity.Name);
                 }

@@ -1,0 +1,475 @@
+﻿
+@{
+    ViewBag.Title = "Гармонический анализ";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+<head>
+    <title>
+        @ViewBag.Title
+    </title>
+</head>
+<div style="float:right;">
+    <a href="#">
+        <span class="glyphicon glyphicon-question-sign" style="font-size: xx-large" data-toggle="collapse" href="#info"></span>
+    </a>
+    <div class="collapse" id="info" style="padding-right:800px">
+        <div class="alert alert-success" role="alert" style="position: absolute; width:800px; z-index:999">
+            <h4 class="alert-heading">Гармонический анализ</h4>
+            На данной странице вы можете записать файлы и получить голосовые параметры.<br>
+            Нажмите на кнопку "Записать файл" и начнется запись. Надпись на кнопке сменится
+            на "Остановить запись" -  нажав на нее файл с записю сохранится в папку для загрузок
+            по умолчанию. <br>Нажмите на кнопку "Выберите файл..." и найдите записанный файл, после этого
+            кнопку "Загрузить". После того, как сервер вернет результаты анализа, вы сможите увидеть
+            в поле "Параметры" параметры записанного файла. <br>Нажмите на кнопку "Таблица частот" и
+            появится таблица гармоник. <br>После того, как вы проанализируете все файлы, нажмите кнопку
+            "Зафиксировать посещение". Если вы при загрузке страницы выбрали "Новое посещение", то
+            появится новая запись на странице "Просмотр посещений" с файлами, которые вы проанализировали
+            за текущий сеанс. Если вы выбрали "Продолжить посещение", файлы добавятся к вашему последнему
+            посещению.
+        </div>
+    </div>
+</div>
+<br><br>
+<div id="graph"></div>
+<div class="col-lg-4" style="padding-top: 3px; width:300px">
+    <!--div class="fl btn btn-primary" id="music">Sound</div>-->
+    <div class="fl btn btn-primary" id="Starter">Начать запись</div><br><br>
+    <div class="fl btn btn-primary" id="massive" style="padding-left:10px">Таблица частот</div>
+    <br>
+    <br>
+    <label class="fl btn btn-primary">
+        Выберите файл...&hellip; <input type="file" style="display: none;" id="uploadFile">
+    </label>
+    <div style="padding-left:10px">
+        <button class="btn btn-secondary" id="submit">Загрузить</button>
+    </div>
+    <div style="padding-top: 10px">
+        <button class="btn btn-primary" id="LoadVisit">Зафиксировать посещение</button>
+    </div>
+</div>
+<!--div class="col-lg-2" style="padding-top: 3px">
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    Файлы:
+                </h4>
+            </div>
+                <div class="panel-body" id="shimmer"></div>
+                <div class="panel-body" id="jitter"></div>
+                <div class="panel-body" id="hnr"></div>
+                <div class="panel-body" id="intensity"></div>
+        </div>
+    </div>
+    </div>-->
+<div class="col-lg-2" style="padding-top: 3px; width:400px">
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#paramCollapse">Параметры:</a>
+                </h4>
+            </div>
+            <div id="paramCollapse" class="panel-collapse collapse in">
+                <div class="panel-body" id="shimmer"></div>
+                <div class="panel-body" id="jitter"></div>
+                <div class="panel-body" id="hnr"></div>
+                <div class="panel-body" id="intensity"></div>
+                <div class="panel-body" id="pitch"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-lg-2" style="padding-top: 3px; width:350px">
+    <div class="panel panel-default">
+        <div class="panel-heading">Таблица частот:</div>
+        <div class="panel-body" style="max-height: 200px; overflow-y: scroll;">
+            <div id="table"></div>
+        </div>
+    </div>
+</div>
+<script>
+
+    class FileInfo{
+        constructor(FileName, Jitter, Shimmer, HNR, Intensity, Pitch) {
+            this.FileName = FileName;
+            this.Jitter = Jitter;
+            this.Shimmer = Shimmer;
+            this.HNR = HNR;
+            this.Intensity = Intensity;
+            this.Pitch = Pitch;
+        }
+    }
+    var FileMassive = [];
+
+    var array = [];
+    var flag = 0;
+    function closest(array, num) {
+        var i = 0;
+        var minDiff = 1000;
+        var ans;
+        for (i in array) {
+            var m = Math.abs(num - array[i]);
+            if (m < minDiff) {
+                minDiff = m;
+                ans = array[i];
+                flag = i;
+            }
+        }
+        return ans;
+    }
+
+    if ('@ViewBag.RecordExist' == 'True')
+        var contVisit = confirm("Продолжить посещение?");
+    if (contVisit == false || contVisit == undefined)
+        var newVisit = confirm("Новое посещение?");
+
+        var state = false;
+        var maxHz = 20000;
+        var bins = 1024;
+        var ffMassive = [];
+        var ffMassiveVal = [];
+        var sound;
+        var $mic
+        var $fft
+        var music = false
+        var myPlot = document.getElementById('graph')
+        var response;
+        var $recorder
+        var $soundFile
+        var $d
+        function setup() {
+            $mic = new p5.AudioIn()
+            $mic.start()
+            $fft = new p5.FFT(0.001, bins)
+            $fft.setInput($mic)
+            $recorder = new p5.SoundRecorder();
+            $recorder.setInput($mic);
+            $soundFile = new p5.SoundFile();
+        }
+        $.ready(() => {
+
+            setup()
+        })
+        function preload() {
+            sound = loadSound/*("../Files/muse-uprising.mp3")*/("../Files/201803BelozerovDY.wav")
+            //alert("loaded")
+
+        }
+        function loaded() {
+
+        }
+
+        function toHz(value) {
+            return maxHz * (value / bins)
+        }
+
+        function toBins(value) {
+            return bins * (value / maxHz )
+        }
+
+        var spectrum = [];
+        var spectrumHz = [];
+
+        var multiarrayVaribleBins = [];
+        var multiarrayValueBins = [];
+        var multiarrayVaribleHz = [];
+        var multiarrayValueHz = [];
+        var ff;
+        var ffHz;
+        function dataToTable(freq, amp) {
+            var html = "";
+            if (document.getElementsByClassName('table table table-striped')[0] != undefined) {
+                document.getElementById('table').removeChild(document.getElementsByClassName('table table table-striped')[0])
+            }
+            html = "<table class = \"table table-striped\"><tr> <th>f, Гц</th> <th>A, Дб</th> </tr> ";
+            freq.forEach((item, i) => {
+                html += "<tr> <td>" + item + "</td> " + "<td>" + amp[i] + "</td> </tr> ";
+                console.log("item = " + item + " i = " + i)
+            })
+            html += "</table>"
+            $("#table").append(html);
+        }
+        function findFfMassive() {
+            var i = 1;
+            while (i < spectrum.length) {
+                if ((spectrum[i - 1] <= spectrum[i]) && (spectrum[i] > spectrum[i + 1])) {
+                    ffMassive.push(toHz(i));
+                    ffMassiveVal.push(spectrum[i])
+                }
+                i++;
+                }
+            }
+    $("#massive").click(() => {
+            buildMultiply(spectrum)
+            Plotly.animate('graph',
+                {
+                    data: [{ x: spectrumHz, y: spectrum }, { x: multiarrayVaribleBins, y: multiarrayValueBins }]
+                }, {
+                    transition: {
+                        duration: 0,
+                    },
+                    frame: {
+                        duration: 0,
+                        redraw: false,
+                    }
+                });
+        dataToTable(multiarrayVaribleBins, multiarrayValueBins);
+        })
+        function findFf() {
+            var i = 1;
+            if (spectrum)
+                while (spectrum[i] <= spectrum[i + 1]) {
+                    i++;
+                }
+            return i;
+        }
+        var trace1 = {
+            x: spectrumHz,
+            y: spectrum,
+            name: 'Спектр',
+            mode: 'lines'
+            //line: { shape: 'spline' }
+        }
+        var trace2 = {
+            x: ff,
+            y: spectrum[ff],
+            name: 'ЧОТ',
+            mode: 'markers'
+        }
+        Plotly.plot('graph', [
+            trace1, trace2
+        ], {
+                xaxis: {
+                    range: [0, maxHz],
+                    title: 'Частота, Hz',
+                    titlefont: {
+                        family: 'Courier New, monospace',
+                        size: 18,
+                        color: '#7f7f7f'
+                    }
+                },
+                yaxis: {
+                    range: [0, 260],
+                    title: 'Громкость, dB',
+                    titlefont: {
+                        family: 'Courier New, monospace',
+                        size: 18,
+                        color: '#7f7f7f'
+                    }}
+            })
+
+       /* function buildMultiplyHz() {
+            multiarrayVaribleHz = [];
+            multiarrayValueHz = [];
+
+            for (var i = ffHz; i < spectrumHz.length; i += ffHz) {
+                multiarrayVaribleHz.push(i);
+                multiarrayValueHz.push(myPlot.data.points[0].y);
+            }
+        }*/
+        myPlot.on('plotly_click', function (data) {
+            var x = data.points[0].x
+            var y = data.points[0].y.toPrecision(4);
+
+           // ffHz = toHz(toBins(x) - 1) + (x - toHz(toBins(x) - 1))/2 //avarage of 2 HZ values
+            //ff = toBins(x);
+            var counter = 0;
+            for (var i = 0; i < spectrumHz.length; i++) {
+                if (spectrumHz[i] == x) {
+                    break;
+                }
+                else {
+                    counter++;
+                }
+            }
+            ff = counter
+            buildMultiply(spectrum);
+            Plotly.animate('graph',
+                {
+                    data: [{ x: spectrumHz, y: spectrum }, { x: multiarrayVaribleBins, y: multiarrayValueBins }]
+                }, {
+                    transition: {
+                        duration: 0,
+                    },
+                    frame: {
+                        duration: 0,
+                        redraw: false,
+                    }
+                });
+        });
+
+        function compute() {
+            //var vol = $mic.getLevel(0) // уровень громкости
+            spectrum = $fft.analyze() // разложение в спектр
+            ff = findFf();
+            spectrum.forEach((item, i) => {
+                spectrumHz[i] = maxHz * (i / bins);
+            })
+
+        }
+        function buildMultiply(spectrum) {
+            multiarrayVaribleBins = [];
+            multiarrayValueBins = [];
+            for (var i = ff; i < spectrum.length; i += ff) {
+                {
+                    console.log(i + " " + spectrum[i])
+                    multiarrayVaribleBins.push(i);
+                    multiarrayValueBins.push(spectrum[i]);
+                }
+            }
+            multiarrayVaribleBins.forEach((item, i) => {
+                multiarrayVaribleBins[i] = spectrumHz[item];
+            })
+        }
+        function update() {
+            if (state === true) {
+                compute();
+                Plotly.animate('graph',
+                    {
+                        data: [{ x: spectrumHz, y: spectrum }, { x: [toHz(ff)], y: [spectrum[ff]] }]
+                    }, {
+                        transition: {
+                            duration: 0,
+                        },
+                        frame: {
+                            duration: 0,
+                            redraw: false,
+                        }
+                    });
+                if(state === true)
+                requestAnimationFrame(update);
+            }
+        }
+
+        $('#Starter').click(() => {
+            if (state === false) {
+                state = true
+                $d = new Date()
+                $recorder.record($soundFile);
+                $('#Starter').html('Остановить запись');
+                requestAnimationFrame(update);
+            }
+            else {
+                state = false
+                $recorder.stop();
+                saveSound($soundFile, document.cookie.split('=')[2] + '' + $d.getDate() + '' + $d.getMonth() + '' + $d.getFullYear() + '' + $d.getHours() + '' + $d.getMinutes() + '' + $d.getSeconds() + '.wav');
+                buildMultiply()
+                Plotly.animate('graph',
+                    {
+                        data: [{ x: spectrumHz, y: spectrum }, { x: multiarrayVaribleBins, y: multiarrayValueBins }]
+                    }, {
+                        transition: {
+                            duration: 0,
+                        },
+                        frame: {
+                            duration: 0,
+                            redraw: false,
+                        }
+                    });
+                $('#Starter').html('Начать запись');
+            }
+        })
+        $('#music').click(() => {
+            if (music == true) {
+                sound.stop()
+                music = false
+            }
+            else {
+                sound.loop()
+                music = true
+            }
+        })
+        $('#submit').on('click', function (e) {
+            e.preventDefault();
+            var files = document.getElementById('uploadFile').files;
+        if (files.length > 0) {
+
+            if (window.FormData !== undefined) {
+                var data = new FormData();
+                for (var x = 0; x < files.length; x++) {
+                    data.append("file" + x, files[x]);
+                }
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Upload", "Home")',
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (result) {
+
+                        var res = result.toString();
+
+                        var frequency = [];
+                        var power = [];
+                        for (var i = 6; i < res.split(',').length; i++) {
+                            frequency.push((parseFloat(res.split(',')[i].split('\t')[0])));
+                            power.push(parseFloat(res.split(',')[i].split('\t')[1]));
+                        }
+
+                        spectrumHz = frequency;
+                        spectrum = power;
+
+                        var min_power = Math.min.apply(Math, power);
+
+                        var jitter = parseFloat(res.split(',')[0].split(' ')[2]).toFixed(3);
+                        var shimmer = parseFloat(res.split(',')[1].split(' ')[2]).toFixed(3);
+                        var hnr = parseFloat(res.split(',')[2].split(' ')[4]).toFixed(2);
+                        var intensity = parseFloat(res.split(',')[3].split(' ')[3]).toFixed(2);
+                        var pitch = closest(spectrumHz, parseFloat(res.split(',')[4].split(' ')[3]).toFixed(2));
+
+                        $("#jitter").text("Джиттер, локальный: " + jitter + " %");
+                        $("#shimmer").text("Шиммер, локальный: " + shimmer + " %");
+                        $("#hnr").text("Отношение гармоника/шум: " + hnr + " dB");
+                        $("#intensity").text("Интенсивность: " + intensity + " dB");
+                        $('#pitch').text("Частота основного тона: " + pitch + " Hz");
+
+                        FileMassive.push(new FileInfo(files[0].name, jitter, shimmer,
+                            hnr, intensity, pitch))
+
+                        ff = parseInt(flag)
+
+                        buildMultiply(spectrum);
+                        Plotly.animate('graph',
+                            {
+                                data: [{ x: spectrumHz, y: spectrum }, { x: multiarrayVaribleBins, y: multiarrayValueBins }]
+                            }, {
+                                transition: {
+                                    duration: 0,
+                                },
+                                frame: {
+                                    duration: 0,
+                                    redraw: false,
+                                }
+                            });
+                    },
+                    error: function (xhr, status, p3) {
+                        alert(xhr.responseText);
+                    }
+                });
+            } else {
+                alert("Браузер не поддерживает загрузку файлов HTML5!");
+            }
+        }
+    });
+
+    $("#LoadVisit").click(() => {
+        var query = "?";
+        for (var i = 0; i < FileMassive.length; i++) {
+            query += "FileName=" + FileMassive[i].FileName + "&" + "Shimmer=" + FileMassive[i].Shimmer + "&" + "Jitter=" + FileMassive[i].Jitter +
+                "&" + "HNR=" + FileMassive[i].HNR + "&" + "Intensity=" + FileMassive[i].Intensity + "&Pitch=" + FileMassive[i].Pitch;
+    if(i!=FileMassive.length)
+    query+='&'
+        }
+        query += newVisit + "_" + contVisit;
+    console.log(query);
+        $.get('@Url.Action("AddVisit", "Home")', query, function (result) {
+            //console.log(_base64ToArrayBuffer(result))
+        })
+            .done(function (result) {
+                alert("Добавлено!")
+            })
+    });
+        requestAnimationFrame(update);
+</script>

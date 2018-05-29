@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="DiplomaConnection-Web.config Connection String" description="DiplomaConnection Строка подключения в web.config, используемая приложением для доступа к базе данных." defaultValue="Data Source=(LocalDb)\MSSQLLocalDB;Initial Catalog=Diploma0.6;Integrated Security=True" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\sizv1\\source\\Voice\\Voice\\obj\\Debug\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DiplomaConnection']/@connectionString" />
+  </parameter>
+  <parameter name="DiplomaConnection_DatabasePublish-Web.config Connection String" description="DiplomaConnection_DatabasePublish Строка подключения в web.config, используемая приложением для доступа к базе данных." defaultValue="DiplomaConnection_DatabasePublish.ConnetionString" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\sizv1\\source\\Voice\\Voice\\obj\\Debug\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DiplomaConnection_DatabasePublish']/@connectionString" />
+  </parameter>
+</parameters>

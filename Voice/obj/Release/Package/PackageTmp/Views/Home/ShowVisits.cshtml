@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewBag.Title = "Просмотр посещений";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@using Voice.Models;
+@using Voice.HtmlExtensions;
+@using System.Data.Entity;
+
+<head>
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+
+    <div class="container">
+        <div style="right:0; position: absolute; z-index:999">
+            <a href="#">
+                <span class="glyphicon glyphicon-question-sign" style="font-size: xx-large" data-toggle="collapse" href="#info"></span>
+            </a>
+            <div class="collapse" id="info">
+                <div class="alert alert-success" role="alert" style=" width:400px;">
+                    <h4 class="alert-heading">Просмотр посещений</h4>
+                    На данной странице вы можете увидеть ваши посещения. Чтобы просмотреть и просмотреть
+                    сохраненные файлы и их параметры, нажмите на необходимое посещение: отобразятся файлы
+                    и их параметры. <br>
+                    Чтобы прослушать сохраненный файл, нажмите на его название.<br>
+                    Для того, чтобы удалить файл из посещения, нажмите на красный крестик напротив него.
+                </div>
+            </div>
+        </div>
+        <div class="panel-group" id="accordion" style="z-index:1">
+            <h2>@ViewBag.Title</h2>
+            @{
+                List<Visit> visits = new List<Visit>();
+                Patient patient;
+                using (DatabaseContext db = new DatabaseContext())
+                {
+                    patient = db.Patients.FirstOrDefault(p => p.Login == User.Identity.Name);
+                    if (patient != null)
+                    {
+                        visits = db.Visits.Where(v => v.PatientId == patient.Id).OrderByDescending(v=>v.DateTime).ToList();
+                    }
+                }
+                int i = 0;
+                foreach (Visit visit in visits)
+                {
+                    List<WavFile> files;
+                    using (DatabaseContext db = new DatabaseContext())
+                    {
+                        files = db.WavFiles.Where(f => f.VisitId == visit.Id).ToList();
+                    }
+
+                @HtmlHelperExtensions.CollapseElemets(patient, visit, files, i);
+            i++;
+        }
+            }
+
+        </div>
+    </div>
+</body>
+<script>
+    window.onload = init;
+    var context;    // Audio context
+    var buf;        // Audio buffer
+
+    function init() {
+        if (!window.AudioContext) {
+            if (!window.webkitAudioContext) {
+                alert("Your browser does not support any AudioContext and cannot play back this audio.");
+                return;
+            }
+            window.AudioContext = window.webkitAudioContext;
+        }
+
+        context = new AudioContext();
+    }
+
+    function playByteArray(bufferView) {
+        var arrayBuffer = new ArrayBuffer(bufferView.length);
+        arrayBuffer = bufferView;
+        console.log(arrayBuffer);
+        console.log(bufferView);
+        context.decodeAudioData(bufferView, function (buffer) {
+            buf = buffer;
+            play();
+        });
+    }
+
+    // Play the loaded file
+    function play() {
+        // Create a source node from the buffer
+        var source = context.createBufferSource();
+        source.buffer = buf;
+        // Connect to the final output node (the speakers)
+        source.connect(context.destination);
+        // Play immediately
+        source.start(0);
+    }
+    function _base64ToArrayBuffer(base64) {
+        var binary_string = window.atob(base64);
+        var len = binary_string.length;
+        var bytes = new Uint8Array(len);
+        for (var i = 0; i < len; i++) {
+            bytes[i] = binary_string.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+    $('.playElement').click(function() {
+        $.get('@Url.Action("GetAudio", "Home")', "file=" + this.id, function (result) {
+            //console.log(_base64ToArrayBuffer(result))
+        })
+            .done(function (result) {
+                playByteArray(_base64ToArrayBuffer(result));
+            })
+    });
+
+    $('.glyphicon-remove').click(function () {
+         $.get('@Url.Action("DeleteAudio", "Home")', "file=" + this.getAttribute('name').split('_')[0] + "&visit=" + this.getAttribute('name').split('_')[1], function (result) {
+            
+        })
+            .done(function (result) {
+                window.location.reload(false);
+            })
+    })
+</script>
+
