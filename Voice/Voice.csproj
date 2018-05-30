@@ -151,17 +151,9 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="HtmlExtensions\HtmlHelperExtensions.cs" />
-    <Compile Include="Migrations\201805141113592_InitialCreate.cs" />
-    <Compile Include="Migrations\201805141113592_InitialCreate.Designer.cs">
-      <DependentUpon>201805141113592_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805191419532_AddRole.cs" />
-    <Compile Include="Migrations\201805191419532_AddRole.Designer.cs">
-      <DependentUpon>201805191419532_AddRole.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805291104378_Initial.cs" />
-    <Compile Include="Migrations\201805291104378_Initial.Designer.cs">
-      <DependentUpon>201805291104378_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201805291852467_Initial.cs" />
+    <Compile Include="Migrations\201805291852467_Initial.Designer.cs">
+      <DependentUpon>201805291852467_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AuthModels.cs" />
@@ -182,6 +174,18 @@
     <Content Include="Content\menu.css" />
     <Content Include="Content\site.min.css" />
     <Content Include="favicon.ico" />
+    <Content Include="Files\12042018223426.wav" />
+    <Content Include="Files\12042018223529.wav" />
+    <Content Include="Files\1_20-4-2018_19-23-17.wav" />
+    <Content Include="Files\201803BelozerovDY.wav" />
+    <Content Include="Files\201803BorovikovaDV.wav" />
+    <Content Include="Files\201803DegterevRO.wav" />
+    <Content Include="Files\201803KireevMM.wav" />
+    <Content Include="Files\201803ShevchenkoTA.wav" />
+    <Content Include="Files\201803TeremshonokIV.wav" />
+    <Content Include="Files\Praat.exe" />
+    <Content Include="Files\praat_output.txt" />
+    <Content Include="Files\Spectrum.txt" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -191,6 +195,14 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Files\201803BelozerovDY.sfk" />
+    <Content Include="Files\201803BorovikovaDV.sfk" />
+    <Content Include="Files\201803DegterevRO.sfk" />
+    <Content Include="Files\201803KireevMM.sfk" />
+    <Content Include="Files\201803ShevchenkoTA.sfk" />
+    <Content Include="Files\201803TeremshonokIV.sfk" />
+    <Content Include="Files\Get_Spectrum" />
+    <Content Include="Files\Jitter_Script" />
     <None Include="Properties\PublishProfiles\Voice20180529092047 - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\common.js" />
@@ -221,6 +233,7 @@
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
@@ -258,14 +271,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201805141113592_InitialCreate.resx">
-      <DependentUpon>201805141113592_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805191419532_AddRole.resx">
-      <DependentUpon>201805191419532_AddRole.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805291104378_Initial.resx">
-      <DependentUpon>201805291104378_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201805291852467_Initial.resx">
+      <DependentUpon>201805291852467_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

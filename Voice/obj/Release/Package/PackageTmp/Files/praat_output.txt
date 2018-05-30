@@ -1,0 +1,5 @@
+Jitter_loc = 0.389
+Shimmer_loc = 0.922
+Mean harmonics-to-noise ratio = 24.25
+Mean intencity = 53.358897304105035
+Mean pitch = 129.66926308103908

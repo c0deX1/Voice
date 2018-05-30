@@ -38,7 +38,7 @@ namespace Voice
 
              bundles.Add(new StyleBundle("~/Content/css").Include(
                        "~/Content/bootstrap.css",
-                       "~/Content/site.css",
+                       "~/Content/Site.css",
                        "~/Content/site.min.css",
                        "~/Content/common.css",
                        "~/Content/menu.css"));
@@ -47,7 +47,7 @@ namespace Voice
              bundles.Add(new ScriptBundle("~/bundles/HarmonicAnalysis").Include(
                 "~/Scripts/HarmonicAnalysis.js"));
 
-            BundleTable.EnableOptimizations = true;
+            BundleTable.EnableOptimizations = false;
         }
     }
 }

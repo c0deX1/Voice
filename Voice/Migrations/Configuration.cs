@@ -1,13 +1,15 @@
 namespace Voice.Migrations
 {
+    using System;
+    using System.Data.Entity;
     using System.Data.Entity.Migrations;
+    using System.Linq;
 
     internal sealed class Configuration : DbMigrationsConfiguration<Voice.Models.DatabaseContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            ContextKey = "Voice.Models.DatabaseContext";
         }
 
         protected override void Seed(Voice.Models.DatabaseContext context)

@@ -10,6 +10,7 @@ using System.Web.Security;
 using System.IO;
 using System.Data.Entity;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace Voice.Controllers
 {
@@ -125,17 +126,34 @@ namespace Voice.Controllers
         {
             List<WavFile> files = new List<WavFile>();
             var RequestQuery = Request.QueryString;
-            for (int i = 0; i < RequestQuery[0].Split(',').Length; i++)
-                files.Add(new WavFile
-                {
-                    Name = RequestQuery[0].Split(',')[i],
-                    Jitter = double.Parse(RequestQuery[2].Split(',')[i].Replace('.', ',')),
-                    Shimmer = double.Parse(RequestQuery[1].Split(',')[i].Replace('.', ',')),
-                    HNR = double.Parse(RequestQuery[3].Split(',')[i].Replace('.', ',')),
-                    Intensity = double.Parse(RequestQuery[4].Split(',')[i].Replace('.', ',')),
-                    FirstPitch = double.Parse(RequestQuery[5].Split(',')[i].Replace('.', ','))
-                });
+            if (CultureInfo.CurrentCulture.Name == "ru-RU")
+            {
+                for (int i = 0; i < RequestQuery[0].Split(',').Length; i++)
 
+                    files.Add(new WavFile
+                    {
+                        Name = RequestQuery[0].Split(',')[i],
+                        Jitter = double.Parse(RequestQuery[2].Split(',')[i].Replace('.', ',')),
+                        Shimmer = double.Parse(RequestQuery[1].Split(',')[i].Replace('.', ',')),
+                        HNR = double.Parse(RequestQuery[3].Split(',')[i].Replace('.', ',')),
+                        Intensity = double.Parse(RequestQuery[4].Split(',')[i].Replace('.', ',')),
+                        FirstPitch = double.Parse(RequestQuery[5].Split(',')[i].Replace('.', ','))
+                    });
+            }
+            else
+            {
+                for (int i = 0; i < RequestQuery[0].Split(',').Length; i++)
+
+                    files.Add(new WavFile
+                    {
+                        Name = RequestQuery[0].Split(',')[i],
+                        Jitter = double.Parse(RequestQuery[2].Split(',')[i]),
+                        Shimmer = double.Parse(RequestQuery[1].Split(',')[i]),
+                        HNR = double.Parse(RequestQuery[3].Split(',')[i]),
+                        Intensity = double.Parse(RequestQuery[4].Split(',')[i]),
+                        FirstPitch = double.Parse(RequestQuery[5].Split(',')[i])
+                    });
+            }
             Visit visit = new Visit();
             using (DatabaseContext db = new DatabaseContext())
             {
@@ -178,6 +196,9 @@ namespace Voice.Controllers
             {
                 var file = db.WavFiles.Where(f => f.Name == name && f.VisitId == visitId);
                 db.WavFiles.RemoveRange(file);
+                var updated = db.Visits.Where(v => v.Id == visitId).ToList();
+                if (updated[0].Files.Count == 0)
+                    db.Visits.RemoveRange(updated);
                 db.SaveChanges();
             }
         }

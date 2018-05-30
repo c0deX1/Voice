@@ -95,12 +95,10 @@ C:\Users\sizv1\source\Voice\Voice\bin\ru\System.Web.Razor.resources.dll
 C:\Users\sizv1\source\Voice\Voice\bin\ru\System.Web.WebPages.resources.dll
 C:\Users\sizv1\source\Voice\Voice\bin\ru\System.Web.WebPages.Deployment.resources.dll
 C:\Users\sizv1\source\Voice\Voice\bin\ru\System.Web.WebPages.Razor.resources.dll
-C:\Users\sizv1\source\Voice\Voice\obj\Release\Voice.Migrations.InitialCreate.resources
-C:\Users\sizv1\source\Voice\Voice\obj\Release\Voice.Migrations.AddRole.resources
-C:\Users\sizv1\source\Voice\Voice\obj\Release\Voice.Migrations.Initial.resources
-C:\Users\sizv1\source\Voice\Voice\obj\Release\Voice.csproj.GenerateResource.cache
 C:\Users\sizv1\source\Voice\Voice\obj\Release\Voice.csproj.CoreCompileInputs.cache
 C:\Users\sizv1\source\Voice\Voice\obj\Release\Voice.csproj.CopyComplete
 C:\Users\sizv1\source\Voice\Voice\obj\Release\Voice.dll
 C:\Users\sizv1\source\Voice\Voice\obj\Release\Voice.pdb
 C:\Users\sizv1\source\Voice\Voice\obj\Release\Voice.csprojResolveAssemblyReference.cache
+C:\Users\sizv1\source\Voice\Voice\obj\Release\Voice.Migrations.Initial.resources
+C:\Users\sizv1\source\Voice\Voice\obj\Release\Voice.csproj.GenerateResource.cache

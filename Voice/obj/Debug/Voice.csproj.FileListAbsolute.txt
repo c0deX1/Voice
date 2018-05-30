@@ -201,8 +201,6 @@ C:\Users\sizv1\source\Voice\Voice\bin\ru\System.Web.WebPages.resources.dll
 C:\Users\sizv1\source\Voice\Voice\bin\ru\System.Web.WebPages.Deployment.resources.dll
 C:\Users\sizv1\source\Voice\Voice\bin\ru\System.Web.WebPages.Razor.resources.dll
 C:\Users\sizv1\source\Voice\Voice\obj\Debug\Voice.csprojResolveAssemblyReference.cache
-C:\Users\sizv1\source\Voice\Voice\obj\Debug\Voice.Migrations.InitialCreate.resources
-C:\Users\sizv1\source\Voice\Voice\obj\Debug\Voice.Migrations.AddRole.resources
 C:\Users\sizv1\source\Voice\Voice\obj\Debug\Voice.csproj.GenerateResource.cache
 C:\Users\sizv1\source\Voice\Voice\obj\Debug\Voice.csproj.CoreCompileInputs.cache
 C:\Users\sizv1\source\Voice\Voice\obj\Debug\Voice.csproj.CopyComplete

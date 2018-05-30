@@ -4,9 +4,7 @@ var maxHz = 20000;
 var bins = 1024;
 var sound;
 var xarray = Array.apply(null, {length: 3500}).map(Number.call, Number)
-function preload(){
-	sound = loadSound('Recording.m4a');
-}
+
 function setup(){
 	$mic = new p5.AudioIn()
 	$mic.start()

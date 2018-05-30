@@ -1,0 +1,39 @@
+form Args
+	sentence First_text
+endform
+
+file$ = first_text$ + ".wav"
+name$ = first_text$
+
+Read from file... 'file$'
+select Sound 'name$'
+intensity = To Intensity... 100 0.0 0.0
+ilow= Get minimum: 0, 0, "Parabolic"
+select Sound 'name$'
+To Pitch... 0.0 75.0 600.0
+select Pitch 'name$'
+pitch = Get mean... 0.0 0.0 Hertz
+select Sound 'name$'
+plus Pitch 'name$'
+To PointProcess (cc)
+select Sound 'name$'
+plus Pitch 'name$'
+plus PointProcess 'name$'_'name$'
+report$ = Voice report... 0.0 0.0 75.0 600.0 1.3 1.6 0.03 0.45
+
+select Pitch 'name$'
+Remove
+select PointProcess 'name$'_'name$'
+Remove
+
+deleteFile: "praat_output.txt"
+jitter_loc = extractNumber (report$, "Jitter (local): ") * 100
+shimmer_loc = extractNumber (report$, "Shimmer (local): ") * 100
+meanHNR = extractNumber(report$, "Mean harmonics-to-noise ratio: ")
+
+appendFileLine: "praat_output.txt", "Jitter_loc = ", jitter_loc
+appendFileLine: "praat_output.txt", "Shimmer_loc = ", shimmer_loc
+appendFileLine: "praat_output.txt", "Mean harmonics-to-noise ratio = ", meanHNR
+appendFileLine: "praat_output.txt", "Mean intencity = ", ilow
+appendFileLine: "praat_output.txt", "Mean pitch = ", pitch
+select Sound 'name$'
